@@ -124,3 +124,11 @@ test("guides page renders as a dedicated responsive knowledge hub", async () => 
   assert.ok(css.includes(".hub-page .guide-grid"), "Guides needs a full-width card grid");
   assert.ok(css.includes("repeat(3, minmax(0, 1fr))"), "Guide cards need three desktop columns");
 });
+
+test("generated pages accept fingerprinted stylesheets to prevent stale layouts", () => {
+  const guideHub = pages.find((page) => page.slug === "guides");
+  const html = renderPage(guideHub, pages, { stylesheetHref: "/styles.a1b2c3d4.css" });
+
+  assert.ok(html.includes('<link rel="stylesheet" href="/styles.a1b2c3d4.css">'));
+  assert.ok(!html.includes('<link rel="stylesheet" href="/styles.css">'));
+});

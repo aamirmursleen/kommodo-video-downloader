@@ -1075,8 +1075,9 @@ function renderToc(page) {
     </aside>`;
 }
 
-export function renderPage(page, allPages = pages) {
+export function renderPage(page, allPages = pages, options = {}) {
   const canonical = `${SITE_URL}/${page.slug}/`;
+  const stylesheetHref = options.stylesheetHref || "/styles.css";
   const body = page.body
     .replace("{{GUIDE_GRID}}", renderGuideGrid(allPages))
     .replace("{{FAQ_LIST}}", renderFaqList(page.faqs));
@@ -1109,7 +1110,7 @@ export function renderPage(page, allPages = pages) {
     <meta name="twitter:title" content="${escapeHtml(page.title)}">
     <meta name="twitter:description" content="${page.description}">
     <meta name="twitter:image" content="${SITE_URL}/og.png">
-    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="${escapeHtml(stylesheetHref)}">
     <script type="application/ld+json">${renderStructuredData(page)}</script>
   </head>
   <body class="article-page${isHub ? " hub-page" : ""}">
