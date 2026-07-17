@@ -74,10 +74,11 @@ test("technical guides are substantial and contain scannable sections", () => {
 
   for (const page of technicalPages) {
     const html = renderPage(page, pages);
-    assert.ok(visibleWordCount(html) >= 650, `${page.slug} is too thin`);
+    assert.ok(visibleWordCount(html) >= 900, `${page.slug} needs more task-specific depth`);
     assert.ok((html.match(/<h2[ >]/g) || []).length >= 3, `${page.slug} needs at least three h2 sections`);
     assert.ok((html.match(/href="\/[^"]+\/"/g) || []).length >= 5, `${page.slug} needs internal links`);
     assert.ok(html.includes('"@type":"TechArticle"'), `${page.slug} TechArticle JSON-LD`);
+    assert.match(`${page.title} ${page.description}`, /Kommodo/i, `${page.slug} metadata must identify its Kommodo search intent`);
   }
 });
 
@@ -109,4 +110,17 @@ test("homepage exposes the content hub and key trust pages", async () => {
   }
   assert.ok(home.includes('"@type": "WebApplication"'), "Homepage needs WebApplication schema");
   assert.ok(!home.includes('"@type": "FAQPage"'), "Homepage must not claim FAQ content it does not display");
+});
+
+test("guides page renders as a dedicated responsive knowledge hub", async () => {
+  const guideHub = pages.find((page) => page.slug === "guides");
+  const html = renderPage(guideHub, pages);
+  const css = await readFile(new URL("../public/styles.css", import.meta.url), "utf8");
+
+  assert.ok(html.includes('<body class="article-page hub-page">'), "Guides needs its own page layout");
+  assert.ok(html.includes('class="hub-actions"'), "Guides needs prominent next actions");
+  assert.ok(html.includes('class="article-layout hub-layout"'), "Guides must not use the narrow article layout");
+  assert.equal((html.match(/class="guide-card"/g) || []).length, 7, "Guides should expose all seven articles");
+  assert.ok(css.includes(".hub-page .guide-grid"), "Guides needs a full-width card grid");
+  assert.ok(css.includes("repeat(3, minmax(0, 1fr))"), "Guide cards need three desktop columns");
 });

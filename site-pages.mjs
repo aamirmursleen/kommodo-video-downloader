@@ -11,19 +11,19 @@ export const pages = [
     title: "Kommodo Download Guides and Technical Resources",
     description: "Explore practical Kommodo download guides, browser video technology explainers, troubleshooting help, recording formats, and privacy resources.",
     eyebrow: "Knowledge center",
-    heading: "Understand every step, from shared link to MP4.",
-    intro: "A focused library for downloading authorized Kommodo recordings, understanding the browser technology involved, and solving common problems without guesswork.",
+    heading: "Save, understand, and troubleshoot your recordings.",
+    intro: "Choose a practical guide, explore the technology behind browser-side MP4 creation, or solve a download problem without guesswork.",
     kind: "hub",
     body: `
       <section>
-        <h2 id="start">Start with the task you need to finish</h2>
-        <p>This knowledge center is organized around real questions that arise before, during, and after a Kommodo download. If you simply want to save a recording, begin with the step-by-step guide. If you want to understand the engineering, use the architecture, HLS, and browser-processing explainers. If something fails, the troubleshooting guide translates each visible symptom into a practical next action.</p>
+        <h2 id="start">Choose the guide that matches your goal</h2>
+        <p>Start with the step-by-step instructions when you simply need an MP4. Explore the architecture, HLS, formats, and browser-processing guides when you want the technical details. If something fails, the troubleshooting guide turns each visible symptom into a practical next action.</p>
         <p>The articles describe the behavior of this open-source downloader as it exists today. They do not pretend that every recording is identical. A public share link, browser memory, the recording host, CORS permissions, and the media format can all affect the result. Each guide makes those boundaries explicit so that you can make an informed choice.</p>
         {{GUIDE_GRID}}
       </section>
       <section>
-        <h2 id="organization">How this topic cluster is organized</h2>
-        <p>The cluster has three layers. The first covers the user journey: finding a public link, pasting it into the downloader, reading progress, and saving the MP4. The second explains the technical path: resolving the share page, reading an HLS playlist, fetching media segments in the browser, and transmuxing compatible streams into an MP4 container. The third covers trust: privacy, responsible use, terms, copyright requests, project ownership, and contact information.</p>
+        <h2 id="organization">Learn at your own pace</h2>
+        <p>The library has three layers. The first covers the user journey: finding a public link, pasting it into the downloader, reading progress, and saving the MP4. The second explains the technical path: resolving the share page, reading an HLS playlist, fetching media segments in the browser, and transmuxing compatible streams into an MP4 container. The third covers trust: privacy, responsible use, terms, copyright requests, project ownership, and contact information.</p>
         <p>Every page links to related pages rather than repeating the same generic explanation. This lets a reader move from a quick answer to deeper technical detail while keeping each article focused on one intent.</p>
       </section>
       <section>
@@ -68,6 +68,12 @@ export const pages = [
         <p>The tool does not ask for a Kommodo password and should never require you to paste account credentials. If a private recording needs authentication, ask the owner to provide an authorized export or a suitable public share link instead of sharing login details.</p>
       </section>
       <section>
+        <h2 id="link-check">Recognize a supported Kommodo recording link</h2>
+        <p>A supported address starts with <code>https://kommodo.ai/recordings/</code> and ends with the recording identifier. The link may include a query string supplied by Kommodo; keep it intact when copying. A dashboard address, editing URL, shortened redirect, or media-playlist URL is not the input this Kommodo video downloader expects. Paste the public recording page rather than attempting to locate technical media files yourself.</p>
+        <p>Test the link in a private browsing window before downloading. If the page opens without another person's session, the resolver can usually inspect it. If it asks for a login, reports that the recording is unavailable, or redirects to a workspace, request a fresh authorized share link. This check separates access problems from browser-conversion problems and avoids spending time troubleshooting a recording the downloader cannot legitimately reach.</p>
+        <p>Do not remove characters from the identifier, publish the URL in a support ticket, or share it with people who were not meant to view the recording. Treat a working public recording link as sensitive access information.</p>
+      </section>
+      <section>
         <h2 id="progress">Read the progress panel</h2>
         <p><strong>Finding your recording</strong> means the lightweight resolver is reading the public share page and locating its approved HLS playlist. <strong>Downloading your video</strong> means the visitor's browser is requesting the media segments from the Kommodo delivery host. The segment counter shows completed pieces, Downloaded shows received bytes, Speed is an average since the transfer began, and ETA estimates the remaining segment time.</p>
         <p><strong>Preparing your MP4</strong> means the browser has received the segments and is reorganizing compatible audio and video tracks into an MP4 container. This is normally a transmux operation, not a quality-reducing re-encode. Progress may appear slower near the end on recordings with many segments because the browser is assembling a large in-memory file.</p>
@@ -92,6 +98,7 @@ export const pages = [
     toc: [
       ["before", "Before you begin"],
       ["steps", "Download steps"],
+      ["link-check", "Supported links"],
       ["progress", "Read progress"],
       ["verify", "Verify the MP4"],
       ["large", "Long recordings"]
@@ -160,8 +167,8 @@ export const pages = [
   {
     slug: "hls-to-mp4",
     navTitle: "HLS to MP4",
-    title: "HLS to MP4: Playlists, Segments, and Transmuxing",
-    description: "Learn how HLS master and media playlists, transport stream segments, codecs, containers, and browser transmuxing produce a compatible MP4 file.",
+    title: "Kommodo HLS to MP4: Playlists and Transmuxing",
+    description: "Learn how the Kommodo video downloader reads HLS playlists and segments, then transmuxes compatible H.264 and AAC media into an MP4 file.",
     eyebrow: "Media technology",
     heading: "HLS to MP4, explained without the alphabet soup.",
     intro: "Understand what changes, what stays untouched, and why joining video segments is more complex than concatenating files.",
@@ -222,8 +229,8 @@ export const pages = [
   {
     slug: "browser-side-processing",
     navTitle: "Browser processing",
-    title: "Browser-Side Video Processing and Privacy",
-    description: "See which downloader operations happen in your browser, which limited task uses Cloudflare, what Kommodo receives, and where privacy boundaries remain.",
+    title: "Kommodo Video Downloader: Browser Processing and Privacy",
+    description: "See how the Kommodo video downloader processes media in your browser, which limited task uses Cloudflare, and where privacy boundaries remain.",
     eyebrow: "Privacy architecture",
     heading: "What browser-side processing means—and what it does not mean.",
     intro: "A precise map of where the share URL, playlists, segments, metadata, and finished MP4 travel during a download.",
@@ -273,6 +280,11 @@ export const pages = [
         <p>These controls reduce risk; they do not promise absolute security or privacy. Review the <a href="/privacy-policy/">Privacy Policy</a> for the operational policy and the <a href="https://github.com/aamirmursleen/kommodo-video-downloader" target="_blank" rel="noopener noreferrer">source code</a> for the exact implementation.</p>
       </section>
       <section>
+        <h2 id="privacy-checklist">Privacy checklist before processing a recording</h2>
+        <p>Decide whether browser-side processing is appropriate before pasting the share URL. Confirm that the recording owner permits a local copy, that the device is trusted, and that the destination folder follows your organization's access and retention rules. Close screen-sharing software if the recording title or progress should not be visible, and avoid public or managed computers where browser downloads may be inspected by another administrator.</p>
+        <p>The finished MP4 can be more portable—and therefore easier to redistribute—than the original share page. Protect it with the same care as the underlying meeting. Use device encryption when available, restrict synchronized folders, and delete temporary or duplicate copies according to policy. For highly confidential, regulated, private, or exceptionally large recordings, an official export managed by the recording owner may provide a more appropriate audit trail than a public-link workflow.</p>
+      </section>
+      <section>
         <h2 id="choices">Your choices</h2>
         <p>You can use the project locally from its source code, avoid contacting support, close the page to release its temporary in-memory result, and refrain from submitting a share URL. You can also ask a recording owner for an official platform export when browser processing is unsuitable for the sensitivity or size of a recording.</p>
         <p>For common failure symptoms related to CORS, expired signatures, memory pressure, or unsupported media, continue to <a href="/troubleshooting/">Troubleshooting Kommodo downloads</a>.</p>
@@ -284,6 +296,7 @@ export const pages = [
       ["cors", "CORS"],
       ["memory", "Memory and Blob URLs"],
       ["controls", "Security controls"],
+      ["privacy-checklist", "Privacy checklist"],
       ["choices", "Your choices"]
     ],
     related: ["privacy-policy", "how-it-works", "troubleshooting"]
@@ -386,6 +399,11 @@ export const pages = [
         <p>Do not delete the source or tell colleagues that the archive is complete until the MP4 has been verified. If playback stops early or the duration is wrong, repeat with a fresh share link and stable network. See <a href="/troubleshooting/">Troubleshooting Kommodo recording downloads</a> for failure-specific help.</p>
       </section>
       <section>
+        <h2 id="permission-record">Keep a simple permission and provenance record</h2>
+        <p>When a Kommodo recording supports client work, research, compliance, or an internal decision, record why the local copy was created. Note the recording owner, the person who approved the download, the approval date, the authorized purpose, the intended storage location, and the retention deadline. Keep that note beside the MP4 or in the organization’s records system without exposing the public share link.</p>
+        <p>This small provenance record helps future reviewers understand where the file came from and whether it may be reused. It is especially valuable when filenames change, staff members leave, or the original recording page expires. A download log does not replace legal consent or organizational policy, but it reduces ambiguity and discourages the MP4 from becoming an unexplained copy that remains accessible indefinitely.</p>
+      </section>
+      <section>
         <h2 id="storage">Store and name the file safely</h2>
         <p>Recordings often contain more sensitive information than their title suggests. Store the MP4 in an access-controlled folder, encrypt devices where appropriate, follow retention schedules, and avoid consumer file-sharing links unless the owner has approved them. Limit access to people who need the recording for the authorized purpose.</p>
         <p>A practical name can use <code>YYYY-MM-DD-project-topic.mp4</code>. Avoid including email addresses, health information, financial information, or other private details in the file name because names can appear in backups, search indexes, and sync logs.</p>
@@ -406,6 +424,7 @@ export const pages = [
       ["link", "Correct share link"],
       ["download", "Browser download"],
       ["verify", "Verify the file"],
+      ["permission-record", "Permission record"],
       ["storage", "Safe storage"],
       ["reuse", "Reuse and sharing"],
       ["alternatives", "Alternatives"]
@@ -469,6 +488,12 @@ export const pages = [
         </table></div>
       </section>
       <section>
+        <h2 id="preflight">Run a compatibility preflight</h2>
+        <p>You do not need to inspect raw media files before every download. Start with observable signals. Confirm that the public Kommodo recording page loads, note its approximate duration, use a current desktop browser, and leave enough free memory and storage for a file that may be large. A short recording that reaches the MP4 preparation stage is a useful test of the same browser and network before attempting an hour-long session.</p>
+        <p>Pay attention to the stage where the downloader stops. Failure while resolving the page suggests an invalid, private, or expired link. Failure while reading the playlist can indicate an unsupported HLS structure or browser access restriction. Repeated segment errors point to the network or media host. Failure after all segments arrive more often indicates a codec, container, timestamp, or memory limitation. These clues are more reliable than guessing from a file extension.</p>
+        <p>If the recording contains separate audio tracks, captions, chapters, encryption, or compliance metadata that must be retained, request an official Kommodo export. A basic MP4 is intended for compatible audio and video playback, not complete platform preservation.</p>
+      </section>
+      <section>
         <h2 id="metadata">Metadata that may not survive</h2>
         <p>The output focuses on playable audio and video. Platform comments, analytics, chapters, transcripts, captions, speaker labels, thumbnails, multiple audio languages, and share-page metadata may not be embedded in the resulting MP4. A title is used to suggest a file name, but that is not the same as preserving the platform's full record.</p>
         <p>If you need captions, compliance metadata, or multiple tracks, ask for an official export. Keep related text files and permissions records beside the MP4 according to your archive policy.</p>
@@ -485,6 +510,7 @@ export const pages = [
       ["transport-stream", "MPEG-TS"],
       ["mp4", "MP4 and codecs"],
       ["matrix", "Compatibility matrix"],
+      ["preflight", "Compatibility preflight"],
       ["metadata", "Metadata"],
       ["diagnose", "Diagnosis"]
     ],
@@ -1055,6 +1081,7 @@ export function renderPage(page, allPages = pages) {
     .replace("{{GUIDE_GRID}}", renderGuideGrid(allPages))
     .replace("{{FAQ_LIST}}", renderFaqList(page.faqs));
   const readLabel = page.kind === "article" ? "Technical guide" : page.kind === "legal" ? "Policy" : "Resource";
+  const isHub = page.kind === "hub";
 
   const html = `<!DOCTYPE html>
 <html lang="en">
@@ -1085,7 +1112,7 @@ export function renderPage(page, allPages = pages) {
     <link rel="stylesheet" href="/styles.css">
     <script type="application/ld+json">${renderStructuredData(page)}</script>
   </head>
-  <body class="article-page">
+  <body class="article-page${isHub ? " hub-page" : ""}">
     <a class="skip-link" href="#main-content">Skip to content</a>
     ${renderHeader()}
     <main id="main-content" class="article-main">
@@ -1095,13 +1122,14 @@ export function renderPage(page, allPages = pages) {
           <p class="eyebrow">${escapeHtml(page.eyebrow)}</p>
           <h1>${escapeHtml(page.heading)}</h1>
           <p class="article-intro">${escapeHtml(page.intro)}</p>
+          ${isHub ? `<div class="hub-actions"><a class="hub-primary" href="/#downloader">Open downloader <span aria-hidden="true">→</span></a><a class="hub-secondary" href="/how-to-use/">Start with the basics</a></div>` : ""}
           <div class="article-byline">
-            <span>${readLabel}</span>
-            <span>Published <time datetime="${PUBLISHED_DATE}">July 18, 2026</time></span>
-            <span>By <a href="/about/">${AUTHOR_NAME}</a></span>
+            ${isHub
+              ? `<span>7 focused guides</span><span>Open-source technology</span><span>Updated <time datetime="${PUBLISHED_DATE}">July 18, 2026</time></span>`
+              : `<span>${readLabel}</span><span>Published <time datetime="${PUBLISHED_DATE}">July 18, 2026</time></span><span>By <a href="/about/">${AUTHOR_NAME}</a></span>`}
           </div>
         </header>
-        <div class="article-layout">
+        <div class="article-layout${isHub ? " hub-layout" : ""}">
           ${renderToc(page)}
           <div class="article-content">${body}</div>
         </div>
