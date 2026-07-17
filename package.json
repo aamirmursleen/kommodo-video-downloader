@@ -25,9 +25,14 @@
   "scripts": {
     "build": "node build.mjs",
     "dev": "npx wrangler pages dev dist --compatibility-date=2026-07-17",
-    "deploy": "npx wrangler pages deploy dist --project-name kommodo-video-downloader"
+    "deploy": "npx wrangler pages deploy dist --project-name kommodo-video-downloader",
+    "test": "node --test",
+    "test:coverage": "node --test --experimental-test-coverage --test-coverage-include=public/_worker.js --test-coverage-lines=80 --test-coverage-functions=80 --test-coverage-branches=80"
   },
   "devDependencies": {
     "wrangler": "^4.112.0"
+  },
+  "dependencies": {
+    "mux.js": "7.1.0"
   }
 }

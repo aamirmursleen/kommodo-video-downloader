@@ -1,11 +1,17 @@
 const form = document.querySelector("#download-form");
 const urlInput = document.querySelector("#recording-url");
 const button = document.querySelector("#download-button");
+const buttonLabel = button.querySelector(".button-label");
+const buttonArrow = button.querySelector(".button-arrow");
+const pasteButton = document.querySelector("#paste-button");
+const formMessage = document.querySelector("#form-message");
+const statusPanel = document.querySelector("#download-status");
+const statusKickerText = document.querySelector("#status-kicker-text");
 const stepEl = document.querySelector("#status-step");
 const detailEl = document.querySelector("#status-detail");
 const percentEl = document.querySelector("#status-percent");
 const progressEl = document.querySelector("#main-progress");
-const progressBar = document.querySelector(".bar");
+const progressSteps = [...document.querySelectorAll(".progress-steps span")];
 const bytesEl = document.querySelector("#status-bytes");
 const speedEl = document.querySelector("#status-speed");
 const segmentsEl = document.querySelector("#status-segments");
@@ -17,6 +23,7 @@ const resultMeta = document.querySelector("#result-meta");
 const saveLink = document.querySelector("#save-link");
 
 const MAX_WORKERS = 8;
+const MAX_SEGMENTS = 5000;
 let activeObjectUrl = null;
 
 const state = {
@@ -34,6 +41,26 @@ function setStep(step, detail = "") {
   addLog(`${step}${detail ? `: ${detail}` : ""}`);
 }
 
+function setUiState(uiState) {
+  statusPanel.dataset.state = uiState;
+  statusPanel.setAttribute("aria-busy", String(uiState === "working"));
+
+  const labels = {
+    idle: "Ready when you are",
+    working: "Working in your browser",
+    success: "Download complete",
+    error: "Something went wrong"
+  };
+  statusKickerText.textContent = labels[uiState] || labels.idle;
+}
+
+function setProgressStage(activeIndex) {
+  progressSteps.forEach((item, index) => {
+    item.classList.toggle("active", index === activeIndex);
+    item.classList.toggle("done", index < activeIndex);
+  });
+}
+
 function addLog(message) {
   const li = document.createElement("li");
   li.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
@@ -42,7 +69,9 @@ function addLog(message) {
 
 function setBusy(isBusy) {
   button.disabled = isBusy;
-  button.textContent = isBusy ? "Working..." : "Download MP4";
+  pasteButton.disabled = isBusy;
+  buttonLabel.textContent = isBusy ? "Preparing video" : "Download video";
+  buttonArrow.textContent = isBusy ? "…" : "→";
 }
 
 function resetProgress() {
@@ -57,7 +86,12 @@ function resetProgress() {
   speedEl.textContent = "0 MB/s";
   segmentsEl.textContent = "0 / 0";
   etaEl.textContent = "ETA --";
+  formMessage.classList.remove("error");
+  formMessage.textContent = "Use a public recording you own or have permission to download.";
+  setUiState("idle");
+  setProgressStage(0);
   resultPanel.hidden = true;
+
   if (activeObjectUrl) {
     URL.revokeObjectURL(activeObjectUrl);
     activeObjectUrl = null;
@@ -67,8 +101,8 @@ function resetProgress() {
 function updateProgress(percent) {
   const safePercent = Math.max(0, Math.min(100, percent));
   percentEl.textContent = `${Math.round(safePercent)}%`;
-  progressEl.style.width = `${safePercent}%`;
-  progressBar.setAttribute("aria-valuenow", String(Math.round(safePercent)));
+  progressEl.value = safePercent;
+  progressEl.textContent = `${Math.round(safePercent)}%`;
 }
 
 function updateStats() {
@@ -76,8 +110,8 @@ function updateStats() {
   const mb = state.bytes / 1024 / 1024;
   const speed = mb / elapsed;
   const percent = state.totalSegments
-    ? (state.doneSegments / state.totalSegments) * 78
-    : 0;
+    ? 12 + (state.doneSegments / state.totalSegments) * 66
+    : 12;
   const remainingSegments = Math.max(state.totalSegments - state.doneSegments, 0);
   const segmentsPerSecond = state.doneSegments / elapsed;
   const eta = segmentsPerSecond > 0 ? remainingSegments / segmentsPerSecond : 0;
@@ -114,30 +148,29 @@ function slugify(value) {
 function normalizeInput(value) {
   const trimmed = value.trim();
   if (!trimmed) throw new Error("Paste a Kommodo recording URL first.");
-  const parsed = new URL(trimmed);
+
+  let parsed;
+  try {
+    parsed = new URL(trimmed);
+  } catch {
+    throw new Error("Paste a complete link beginning with https://");
+  }
+
   if (!["http:", "https:"].includes(parsed.protocol)) {
     throw new Error("Use an http or https URL.");
+  }
+
+  const allowedHosts = new Set(["kommodo.ai", "www.kommodo.ai"]);
+  if (!allowedHosts.has(parsed.hostname.toLowerCase())) {
+    throw new Error("Paste a Kommodo recording link from kommodo.ai.");
+  }
+  if (!/^\/recordings\/[a-z0-9_-]+\/?$/i.test(parsed.pathname)) {
+    throw new Error("This does not look like a Kommodo recording link.");
   }
   return parsed.toString();
 }
 
-function isPlaylistUrl(value) {
-  try {
-    return new URL(value).pathname.endsWith(".m3u8");
-  } catch {
-    return false;
-  }
-}
-
 async function resolveRecording(inputUrl) {
-  if (isPlaylistUrl(inputUrl)) {
-    return {
-      hlsUrl: inputUrl,
-      title: "Kommodo recording",
-      recordingId: "direct-playlist"
-    };
-  }
-
   const endpoint = `/api/resolve?url=${encodeURIComponent(inputUrl)}`;
   const response = await fetch(endpoint, { cache: "no-store" });
   const payload = await response.json().catch(() => ({}));
@@ -155,20 +188,54 @@ async function fetchPlaylist(hlsUrl) {
   return response.text();
 }
 
+function findVariantPlaylists(text, playlistUrl) {
+  const lines = text.split(/\r?\n/).map((line) => line.trim()).filter(Boolean);
+  const variants = [];
+
+  for (let index = 0; index < lines.length; index += 1) {
+    const line = lines[index];
+    if (!line.startsWith("#EXT-X-STREAM-INF:")) continue;
+
+    const bandwidthMatch = line.match(/BANDWIDTH=(\d+)/i);
+    const bandwidth = Number(bandwidthMatch?.[1] || 0);
+    const nextLine = lines.slice(index + 1).find((item) => !item.startsWith("#"));
+    if (nextLine) {
+      variants.push({
+        url: new URL(nextLine, playlistUrl).toString(),
+        bandwidth
+      });
+    }
+  }
+
+  return variants.sort((a, b) => b.bandwidth - a.bandwidth);
+}
+
+async function loadMediaPlaylist(hlsUrl, depth = 0) {
+  if (depth > 2) {
+    throw new Error("The HLS playlist has too many nested levels.");
+  }
+
+  const text = await fetchPlaylist(hlsUrl);
+  const variants = findVariantPlaylists(text, hlsUrl);
+  if (!variants.length) return { text, url: hlsUrl };
+
+  addLog(`Selected the highest-quality stream from ${variants.length} available option${variants.length === 1 ? "" : "s"}.`);
+  return loadMediaPlaylist(variants[0].url, depth + 1);
+}
+
 function parsePlaylist(text, playlistUrl) {
   if (!text.includes("#EXTM3U")) {
     throw new Error("The resolved file is not an HLS playlist.");
   }
   if (text.includes("#EXT-X-KEY")) {
-    throw new Error("This recording appears to be encrypted HLS, which this browser downloader cannot convert.");
+    throw new Error("This recording is encrypted and cannot be converted by this browser tool.");
   }
 
   const lines = text.split(/\r?\n/).map((line) => line.trim()).filter(Boolean);
   const segments = [];
   let duration = 0;
 
-  for (let index = 0; index < lines.length; index += 1) {
-    const line = lines[index];
+  for (const line of lines) {
     if (line.startsWith("#EXTINF:")) {
       duration = Number.parseFloat(line.slice(8).split(",")[0]) || 0;
       continue;
@@ -183,6 +250,9 @@ function parsePlaylist(text, playlistUrl) {
 
   if (!segments.length) {
     throw new Error("No downloadable video segments were found in the playlist.");
+  }
+  if (segments.length > MAX_SEGMENTS) {
+    throw new Error("This recording is too large to prepare safely in one browser tab.");
   }
 
   return {
@@ -263,10 +333,10 @@ async function downloadSegments(segments) {
 
 async function transmuxToMp4(buffers) {
   if (!window.muxjs?.mp4?.Transmuxer) {
-    throw new Error("MP4 converter failed to load. Refresh and try again.");
+    throw new Error("The MP4 converter did not load. Refresh the page and try again.");
   }
 
-  setStep("Assembling MP4", "Converting downloaded HLS segments in your browser.");
+  setStep("Preparing your MP4", "Converting the downloaded video in this browser.");
   updateProgress(82);
 
   const transmuxer = new window.muxjs.mp4.Transmuxer({
@@ -309,27 +379,31 @@ async function handleSubmit(event) {
 
   try {
     const inputUrl = normalizeInput(urlInput.value);
-    setStep("Resolving recording", "Finding the signed HLS playlist.");
+    setUiState("working");
+    setProgressStage(0);
+    setStep("Finding your recording", "Resolving the secure video playlist.");
     updateProgress(4);
 
     const resolved = await resolveRecording(inputUrl);
     const title = resolved.title || "Kommodo recording";
 
-    setStep("Reading playlist", "Loading segment list from Kommodo CDN.");
+    setStep("Reading video details", "Loading the available recording segments.");
     updateProgress(10);
-    const playlistText = await fetchPlaylist(resolved.hlsUrl);
-    const playlist = parsePlaylist(playlistText, resolved.hlsUrl);
+    const mediaPlaylist = await loadMediaPlaylist(resolved.hlsUrl);
+    const playlist = parsePlaylist(mediaPlaylist.text, mediaPlaylist.url);
 
     state.totalSegments = playlist.segments.length;
     state.totalDuration = playlist.totalDuration;
     state.startedAt = performance.now();
     segmentsEl.textContent = `0 / ${state.totalSegments}`;
-    setStep("Downloading segments", `${state.totalSegments} segments, estimated duration ${formatTime(state.totalDuration)}.`);
+    setProgressStage(1);
+    setStep("Downloading your video", `${state.totalSegments} segments · about ${formatTime(state.totalDuration)} of video.`);
     updateProgress(12);
 
     const segmentBuffers = await downloadSegments(playlist.segments);
-    setStep("Segments downloaded", `${formatBytes(state.bytes)} received by your browser.`);
+    setStep("Video received", `${formatBytes(state.bytes)} downloaded directly to this browser.`);
 
+    setProgressStage(2);
     const mp4Blob = await transmuxToMp4(segmentBuffers);
     activeObjectUrl = URL.createObjectURL(mp4Blob);
     const fileName = `${slugify(title || resolved.recordingId)}.mp4`;
@@ -340,14 +414,48 @@ async function handleSubmit(event) {
     resultMeta.textContent = `${formatBytes(mp4Blob.size)} MP4 generated in your browser.`;
     resultPanel.hidden = false;
 
-    setStep("Download ready", "Click Save MP4 to store the file.");
+    setStep("Your MP4 is ready", "Select Save MP4 to store the file.");
     updateProgress(100);
+    setUiState("success");
+    setProgressStage(3);
   } catch (error) {
-    setStep("Download failed", error.message || "Unknown error.");
-    addLog("If this is a private or expired recording, open it in Kommodo and copy a fresh share link.");
+    const message = error.message || "The recording could not be prepared.";
+    setStep("Download failed", message);
+    setUiState("error");
+    formMessage.classList.add("error");
+    formMessage.textContent = message;
+    addLog("If the recording is private or expired, copy a fresh public share link from Kommodo.");
   } finally {
     setBusy(false);
   }
 }
 
 form.addEventListener("submit", handleSubmit);
+
+pasteButton.addEventListener("click", async () => {
+  try {
+    if (!navigator.clipboard || !window.isSecureContext) {
+      throw new Error("Clipboard access is unavailable in this browser.");
+    }
+    const clipboardText = (await navigator.clipboard.readText()).trim();
+    if (!clipboardText) throw new Error("Your clipboard does not contain a link.");
+    urlInput.value = clipboardText;
+    formMessage.classList.remove("error");
+    formMessage.textContent = "Link pasted. Select Download video when you’re ready.";
+    urlInput.focus();
+  } catch (error) {
+    formMessage.classList.add("error");
+    formMessage.textContent = error.message || "Paste the link into the field manually.";
+    urlInput.focus();
+  }
+});
+
+urlInput.addEventListener("input", () => {
+  if (!formMessage.classList.contains("error")) return;
+  formMessage.classList.remove("error");
+  formMessage.textContent = "Use a public recording you own or have permission to download.";
+});
+
+window.addEventListener("beforeunload", () => {
+  if (activeObjectUrl) URL.revokeObjectURL(activeObjectUrl);
+});
