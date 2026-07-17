@@ -14,6 +14,12 @@ Live site: https://kommodovideodownloader.nafran.com/
 - Selects the highest-quality stream when a recording offers multiple HLS variants.
 - Uses a responsive, accessible interface with clear success and error states.
 
+## Guides and policies
+
+The production build generates a focused resource cluster with practical guides, technical explainers, FAQ, Privacy Policy, Terms, Disclaimer, DMCA and Copyright Policy, Contact, and About pages. Every page includes a canonical URL, unique metadata, breadcrumb and page-type structured data, internal links, and sitemap coverage.
+
+The legal pages are operational templates and general information, not legal advice. They should be reviewed by qualified counsel before being relied upon for a business or regulated workflow.
+
 ## Why there is a resolver
 
 Kommodo recording pages do not expose browser-readable CORS headers, so client-side JavaScript cannot parse the share page directly. The Pages Function only resolves the recording page into the signed playlist URL. The actual video segment downloads are fetched from the visitor's browser, not proxied through the server.

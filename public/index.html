@@ -50,35 +50,6 @@
               "priceCurrency": "USD"
             },
             "softwareHelp": "https://github.com/aamirmursleen/kommodo-video-downloader"
-          },
-          {
-            "@type": "FAQPage",
-            "mainEntity": [
-              {
-                "@type": "Question",
-                "name": "How do I download a Kommodo recording as MP4?",
-                "acceptedAnswer": {
-                  "@type": "Answer",
-                  "text": "Paste a public Kommodo recording URL, select Download video, wait for the browser to prepare the recording, and then save the generated MP4."
-                }
-              },
-              {
-                "@type": "Question",
-                "name": "Is my video uploaded to this website?",
-                "acceptedAnswer": {
-                  "@type": "Answer",
-                  "text": "No. The recording segments are fetched and converted by your browser when Kommodo permits browser access. The website server only resolves the public share page to its playlist URL."
-                }
-              },
-              {
-                "@type": "Question",
-                "name": "Is this Kommodo downloader free and open source?",
-                "acceptedAnswer": {
-                  "@type": "Answer",
-                  "text": "Yes. It is free to use and the source code is available on GitHub under the MIT license."
-                }
-              }
-            ]
           }
         ]
       }
@@ -97,7 +68,8 @@
         </a>
         <nav class="nav-links" aria-label="Primary navigation">
           <a href="#how-it-works">How it works</a>
-          <a href="#privacy">Privacy</a>
+          <a href="/guides/">Guides</a>
+          <a href="/privacy-policy/">Privacy</a>
           <a class="nav-button" href="https://github.com/aamirmursleen/kommodo-video-downloader" target="_blank" rel="noopener noreferrer">View source</a>
         </nav>
       </div>
@@ -243,7 +215,37 @@
             <li><span aria-hidden="true">✓</span> No account or personal information required</li>
             <li><span aria-hidden="true">✓</span> Open-source code you can inspect</li>
           </ul>
+          <p class="section-link"><a href="/browser-side-processing/">Read the browser-side privacy architecture <span aria-hidden="true">→</span></a></p>
         </div>
+      </section>
+
+      <section class="section-shell resource-section" aria-labelledby="resource-title">
+        <div class="section-heading">
+          <p class="eyebrow">Guides and technology</p>
+          <h2 id="resource-title">Learn what happens after you paste the link.</h2>
+          <p>Practical instructions, transparent engineering, and clear answers for common recording problems.</p>
+        </div>
+        <div class="resource-grid">
+          <a href="/how-to-use/">
+            <span>01 · Guide</span>
+            <strong>How to use the downloader</strong>
+            <p>Prepare the link, understand progress, save the MP4, and verify the finished file.</p>
+            <i aria-hidden="true">→</i>
+          </a>
+          <a href="/how-it-works/">
+            <span>02 · Technology</span>
+            <strong>How the whole system works</strong>
+            <p>Resolver validation, HLS parsing, browser transfer, mux.js, and Blob file creation.</p>
+            <i aria-hidden="true">→</i>
+          </a>
+          <a href="/troubleshooting/">
+            <span>03 · Support</span>
+            <strong>Troubleshoot a failed download</strong>
+            <p>Identify link, playlist, CORS, segment, memory, conversion, and save errors.</p>
+            <i aria-hidden="true">→</i>
+          </a>
+        </div>
+        <a class="all-guides-link" href="/guides/">Explore all guides and resources <span aria-hidden="true">→</span></a>
       </section>
 
       <section class="section-shell faq-section" aria-labelledby="faq-title">
@@ -268,6 +270,7 @@
             <summary>Why might a recording fail?<span aria-hidden="true">+</span></summary>
             <p>The share link may be expired, the recording may be private, or the browser may block access to the video host. Try a fresh public share link in an up-to-date browser.</p>
           </details>
+          <a class="faq-more" href="/faq/">Read all frequently asked questions <span aria-hidden="true">→</span></a>
         </div>
       </section>
 
@@ -287,12 +290,18 @@
         <div><strong>Kommodo Downloader</strong><small>A free tool by <a href="https://www.nafran.com/" rel="noopener">Nafran</a></small></div>
       </div>
       <nav aria-label="Footer navigation">
-        <a href="#downloader">Downloader</a>
-        <a href="#privacy">Privacy</a>
+        <a href="/#downloader">Downloader</a>
+        <a href="/guides/">Guides</a>
+        <a href="/faq/">FAQ</a>
+        <a href="/about/">About</a>
+        <a href="/contact/">Contact</a>
+        <a href="/privacy-policy/">Privacy</a>
+        <a href="/terms/">Terms</a>
+        <a href="/disclaimer/">Disclaimer</a>
+        <a href="/dmca/">DMCA</a>
         <a href="https://github.com/aamirmursleen/kommodo-video-downloader" target="_blank" rel="noopener noreferrer">GitHub</a>
-        <a href="https://github.com/aamirmursleen" target="_blank" rel="noopener noreferrer">Creator</a>
       </nav>
-      <p class="legal">Use only for recordings you own or are authorized to download.</p>
+      <p class="legal">Use only for recordings you own or are authorized to download. This independent project is not affiliated with Kommodo.</p>
     </footer>
   </body>
 </html>
