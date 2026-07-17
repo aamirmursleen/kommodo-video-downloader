@@ -100,7 +100,7 @@
       </header>
 
       <main>
-        <section class="hero" aria-labelledby="hero-title">
+        <section id="downloader" class="hero" aria-labelledby="hero-title">
           <div class="hero-copy">
             <p class="eyebrow">Kommodo recording to MP4</p>
             <h1 id="hero-title">Komodo Video Downloader</h1>
@@ -109,76 +109,63 @@
               and save the recording as an MP4. The video segments are downloaded by
               your browser, so the heavy transfer uses the visitor connection.
             </p>
+            <form id="download-form" class="download-form hero-form">
+              <label for="recording-url">Paste your Kommodo recording URL</label>
+              <div class="input-row">
+                <input id="recording-url" name="url" type="url" placeholder="https://kommodo.ai/recordings/..." autocomplete="url" required>
+                <button id="download-button" class="button button-primary" type="submit">Download MP4</button>
+              </div>
+              <p class="hint">Works with public Kommodo recording links and direct .m3u8 playlist URLs. Use recordings you own or have permission to download.</p>
+            </form>
             <div class="hero-actions">
-              <a class="button button-primary" href="#downloader">Start download</a>
+              <a class="button button-secondary" href="https://github.com/aamirmursleen/kommodo-video-downloader" rel="noopener">Open source repo</a>
               <a class="button button-secondary" href="https://github.com/aamirmursleen" rel="noopener">GitHub profile</a>
             </div>
           </div>
-          <div class="hero-panel" aria-label="Download status preview">
-            <div class="terminal-card">
-              <div class="terminal-line"><span>01</span> Resolve recording link</div>
-              <div class="terminal-line"><span>02</span> Read HLS playlist</div>
-              <div class="terminal-line"><span>03</span> Download segments in browser</div>
-              <div class="terminal-line"><span>04</span> Assemble MP4</div>
-              <div class="terminal-meter" aria-hidden="true"><i></i></div>
+          <div class="hero-panel" aria-label="Live download progress">
+            <div class="hero-panel-header">
+              <p class="eyebrow">Live progress</p>
+              <h2>Browser-side MP4 export</h2>
             </div>
-          </div>
-        </section>
-
-        <section id="downloader" class="tool-section" aria-labelledby="tool-title">
-          <div class="section-heading">
-            <p class="eyebrow">Free tool</p>
-            <h2 id="tool-title">Download a Kommodo recording as MP4</h2>
-            <p>Use recordings you own or have permission to download. Private or expired links may fail if Kommodo no longer serves the signed playlist.</p>
-          </div>
-
-          <form id="download-form" class="download-form">
-            <label for="recording-url">Kommodo recording URL</label>
-            <div class="input-row">
-              <input id="recording-url" name="url" type="url" placeholder="https://kommodo.ai/recordings/..." autocomplete="url" required>
-              <button id="download-button" class="button button-primary" type="submit">Download MP4</button>
+            <div class="progress-grid" aria-live="polite">
+              <article class="progress-card">
+                <span class="label">Step</span>
+                <strong id="status-step">Waiting for URL</strong>
+                <p id="status-detail">Paste a Kommodo recording link to begin.</p>
+              </article>
+              <article class="progress-card">
+                <span class="label">Progress</span>
+                <strong id="status-percent">0%</strong>
+                <div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+                  <i id="main-progress"></i>
+                </div>
+              </article>
+              <article class="progress-card">
+                <span class="label">Downloaded</span>
+                <strong id="status-bytes">0 MB</strong>
+                <p id="status-speed">0 MB/s</p>
+              </article>
+              <article class="progress-card">
+                <span class="label">Segments</span>
+                <strong id="status-segments">0 / 0</strong>
+                <p id="status-eta">ETA --</p>
+              </article>
             </div>
-            <p class="hint">Works with public Kommodo recording links and direct .m3u8 playlist URLs.</p>
-          </form>
 
-          <div class="progress-grid" aria-live="polite">
-            <article class="progress-card">
-              <span class="label">Step</span>
-              <strong id="status-step">Waiting for URL</strong>
-              <p id="status-detail">Paste a Kommodo recording link to begin.</p>
-            </article>
-            <article class="progress-card">
-              <span class="label">Progress</span>
-              <strong id="status-percent">0%</strong>
-              <div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
-                <i id="main-progress"></i>
+            <div id="result-panel" class="result-panel" hidden>
+              <div>
+                <span class="label">Ready</span>
+                <strong id="result-title">MP4 file generated</strong>
+                <p id="result-meta">Your browser generated the MP4 file.</p>
               </div>
-            </article>
-            <article class="progress-card">
-              <span class="label">Downloaded</span>
-              <strong id="status-bytes">0 MB</strong>
-              <p id="status-speed">0 MB/s</p>
-            </article>
-            <article class="progress-card">
-              <span class="label">Segments</span>
-              <strong id="status-segments">0 / 0</strong>
-              <p id="status-eta">ETA --</p>
-            </article>
-          </div>
-
-          <div id="result-panel" class="result-panel" hidden>
-            <div>
-              <span class="label">Ready</span>
-              <strong id="result-title">MP4 file generated</strong>
-              <p id="result-meta">Your browser generated the MP4 file.</p>
+              <a id="save-link" class="button button-primary" href="#" download>Save MP4</a>
             </div>
-            <a id="save-link" class="button button-primary" href="#" download>Save MP4</a>
-          </div>
 
-          <details class="log-panel">
-            <summary>Download log</summary>
-            <ol id="download-log"></ol>
-          </details>
+            <details class="log-panel">
+              <summary>Download log</summary>
+              <ol id="download-log"></ol>
+            </details>
+          </div>
         </section>
 
         <section id="how-it-works" class="content-grid" aria-labelledby="how-title">

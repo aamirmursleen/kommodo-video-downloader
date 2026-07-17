@@ -110,9 +110,9 @@ input {
 
 .hero {
   display: grid;
-  grid-template-columns: minmax(0, 1.1fr) minmax(320px, 0.75fr);
+  grid-template-columns: minmax(0, 1fr) minmax(360px, 0.82fr);
   gap: 44px;
-  align-items: center;
+  align-items: stretch;
   min-height: 620px;
   padding: 64px 0;
   border-bottom: 1px solid var(--line);
@@ -191,6 +191,21 @@ h3 {
   border: 2px solid var(--black);
   background: var(--panel);
   box-shadow: 12px 12px 0 var(--black);
+  padding: 24px;
+}
+
+.hero-panel-header {
+  margin-bottom: 18px;
+}
+
+.hero-panel h2 {
+  margin-bottom: 0;
+  font-size: clamp(1.8rem, 3vw, 2.7rem);
+}
+
+.hero-form {
+  max-width: 760px;
+  margin-bottom: 18px;
 }
 
 .terminal-card {
@@ -294,6 +309,11 @@ input[type="url"]:focus {
   margin-top: 18px;
 }
 
+.hero-panel .progress-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-top: 0;
+}
+
 .progress-card,
 .result-panel {
   border: 1px solid var(--black);
@@ -305,6 +325,10 @@ input[type="url"]:focus {
   display: block;
   margin: 6px 0;
   font-size: 1.35rem;
+}
+
+.hero-panel .progress-card strong {
+  font-size: 1.05rem;
 }
 
 .label {
@@ -331,6 +355,7 @@ input[type="url"]:focus {
   margin-top: 18px;
   border: 1px solid var(--line);
   padding: 16px;
+  background: var(--white);
 }
 
 .log-panel summary {
@@ -408,6 +433,10 @@ input[type="url"]:focus {
   .progress-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+
+  .hero-panel .progress-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 @media (max-width: 560px) {
@@ -420,6 +449,7 @@ input[type="url"]:focus {
   }
 
   .progress-grid,
+  .hero-panel .progress-grid,
   .result-panel {
     grid-template-columns: 1fr;
   }
