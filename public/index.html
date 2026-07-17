@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Komodo Video Downloader - Download Kommodo Recordings as MP4</title>
+    <meta name="description" content="Free open-source Komodo video downloader for Kommodo recordings. Paste a Kommodo recording link, watch live progress, and save the video as an MP4 from your browser.">
+    <meta name="keywords" content="Komodo video downloader, Kommodo video downloader, download Kommodo recording, Komodo recording downloader, Kommodo to MP4, Komodo MP4 downloader">
+    <meta name="robots" content="index, follow, max-image-preview:large">
+    <meta name="author" content="Muhammad Aamir Mursleen">
+    <link rel="canonical" href="https://kommodovideodownloader.nafran.com/">
+    <link rel="manifest" href="/site.webmanifest">
+    <meta name="theme-color" content="#000000">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Komodo Video Downloader">
+    <meta property="og:title" content="Komodo Video Downloader - Save Kommodo Recordings as MP4">
+    <meta property="og:description" content="Paste a Kommodo recording URL, track progress, and download the recording as MP4 with browser-side video transfer.">
+    <meta property="og:url" content="https://kommodovideodownloader.nafran.com/">
+    <meta property="og:image" content="https://kommodovideodownloader.nafran.com/og.png">
+    <meta property="og:image:alt" content="Black and white Komodo video downloader interface">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Komodo Video Downloader">
+    <meta name="twitter:description" content="Download Kommodo recordings as MP4 with live browser-side progress.">
+    <meta name="twitter:image" content="https://kommodovideodownloader.nafran.com/og.png">
+    <link rel="stylesheet" href="/styles.css">
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "WebApplication",
+            "name": "Komodo Video Downloader",
+            "alternateName": "Kommodo Video Downloader",
+            "url": "https://kommodovideodownloader.nafran.com/",
+            "applicationCategory": "MultimediaApplication",
+            "operatingSystem": "Any",
+            "description": "Open-source browser tool for downloading Kommodo recordings as MP4 with live progress.",
+            "creator": {
+              "@type": "Person",
+              "name": "Muhammad Aamir Mursleen",
+              "url": "https://github.com/aamirmursleen"
+            },
+            "offers": {
+              "@type": "Offer",
+              "price": "0",
+              "priceCurrency": "USD"
+            },
+            "softwareHelp": "https://github.com/aamirmursleen/kommodo-video-downloader"
+          },
+          {
+            "@type": "FAQPage",
+            "mainEntity": [
+              {
+                "@type": "Question",
+                "name": "How do I download a Kommodo recording as MP4?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Paste a Kommodo recording URL, choose Download MP4, wait for the browser to download the video segments, then save the generated MP4 file."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Does the server download the video?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "No. The server only resolves the Kommodo page into the signed HLS playlist because Kommodo blocks browser reads of the share page. The actual video segments are fetched by the visitor's browser when CORS allows it."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Is this Komodo video downloader open source?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Yes. The source code is published on GitHub under the MIT license."
+                }
+              }
+            ]
+          }
+        ]
+      }
+    </script>
+    <script defer src="https://cdn.jsdelivr.net/npm/mux.js@7.1.0/dist/mux.min.js"></script>
+    <script defer src="/app.js"></script>
+  </head>
+  <body>
+    <div class="page-shell">
+      <header class="site-header" aria-label="Main navigation">
+        <a class="brand" href="/" aria-label="Komodo Video Downloader home">
+          <span class="brand-mark" aria-hidden="true">K</span>
+          <span>
+            <strong>Komodo Video Downloader</strong>
+            <small>Open-source MP4 export for Kommodo recordings</small>
+          </span>
+        </a>
+        <nav class="nav-links" aria-label="Primary">
+          <a href="#downloader">Downloader</a>
+          <a href="#how-it-works">How it works</a>
+          <a href="https://github.com/aamirmursleen/kommodo-video-downloader" rel="noopener">Source</a>
+        </nav>
+      </header>
+
+      <main>
+        <section class="hero" aria-labelledby="hero-title">
+          <div class="hero-copy">
+            <p class="eyebrow">Kommodo recording to MP4</p>
+            <h1 id="hero-title">Komodo Video Downloader</h1>
+            <p class="hero-text">
+              Paste a Kommodo recording link, watch the download progress in real time,
+              and save the recording as an MP4. The video segments are downloaded by
+              your browser, so the heavy transfer uses the visitor connection.
+            </p>
+            <div class="hero-actions">
+              <a class="button button-primary" href="#downloader">Start download</a>
+              <a class="button button-secondary" href="https://github.com/aamirmursleen" rel="noopener">GitHub profile</a>
+            </div>
+          </div>
+          <div class="hero-panel" aria-label="Download status preview">
+            <div class="terminal-card">
+              <div class="terminal-line"><span>01</span> Resolve recording link</div>
+              <div class="terminal-line"><span>02</span> Read HLS playlist</div>
+              <div class="terminal-line"><span>03</span> Download segments in browser</div>
+              <div class="terminal-line"><span>04</span> Assemble MP4</div>
+              <div class="terminal-meter" aria-hidden="true"><i></i></div>
+            </div>
+          </div>
+        </section>
+
+        <section id="downloader" class="tool-section" aria-labelledby="tool-title">
+          <div class="section-heading">
+            <p class="eyebrow">Free tool</p>
+            <h2 id="tool-title">Download a Kommodo recording as MP4</h2>
+            <p>Use recordings you own or have permission to download. Private or expired links may fail if Kommodo no longer serves the signed playlist.</p>
+          </div>
+
+          <form id="download-form" class="download-form">
+            <label for="recording-url">Kommodo recording URL</label>
+            <div class="input-row">
+              <input id="recording-url" name="url" type="url" placeholder="https://kommodo.ai/recordings/..." autocomplete="url" required>
+              <button id="download-button" class="button button-primary" type="submit">Download MP4</button>
+            </div>
+            <p class="hint">Works with public Kommodo recording links and direct .m3u8 playlist URLs.</p>
+          </form>
+
+          <div class="progress-grid" aria-live="polite">
+            <article class="progress-card">
+              <span class="label">Step</span>
+              <strong id="status-step">Waiting for URL</strong>
+              <p id="status-detail">Paste a Kommodo recording link to begin.</p>
+            </article>
+            <article class="progress-card">
+              <span class="label">Progress</span>
+              <strong id="status-percent">0%</strong>
+              <div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+                <i id="main-progress"></i>
+              </div>
+            </article>
+            <article class="progress-card">
+              <span class="label">Downloaded</span>
+              <strong id="status-bytes">0 MB</strong>
+              <p id="status-speed">0 MB/s</p>
+            </article>
+            <article class="progress-card">
+              <span class="label">Segments</span>
+              <strong id="status-segments">0 / 0</strong>
+              <p id="status-eta">ETA --</p>
+            </article>
+          </div>
+
+          <div id="result-panel" class="result-panel" hidden>
+            <div>
+              <span class="label">Ready</span>
+              <strong id="result-title">MP4 file generated</strong>
+              <p id="result-meta">Your browser generated the MP4 file.</p>
+            </div>
+            <a id="save-link" class="button button-primary" href="#" download>Save MP4</a>
+          </div>
+
+          <details class="log-panel">
+            <summary>Download log</summary>
+            <ol id="download-log"></ol>
+          </details>
+        </section>
+
+        <section id="how-it-works" class="content-grid" aria-labelledby="how-title">
+          <div>
+            <p class="eyebrow">User IP transfer</p>
+            <h2 id="how-title">How the downloader works</h2>
+          </div>
+          <div class="explain-list">
+            <article>
+              <h3>1. Resolve the playlist</h3>
+              <p>Kommodo blocks browser reads of the recording page, so a small Cloudflare Pages Function extracts the signed HLS playlist URL.</p>
+            </article>
+            <article>
+              <h3>2. Fetch video in the browser</h3>
+              <p>The playlist and video segments are fetched by the visitor's browser when Kommodo's CORS headers allow it. The video bytes are not proxied through this server.</p>
+            </article>
+            <article>
+              <h3>3. Convert to MP4 locally</h3>
+              <p>The browser transmuxes the HLS transport stream into MP4 without uploading the recording anywhere.</p>
+            </article>
+          </div>
+        </section>
+
+        <section class="seo-section" aria-labelledby="seo-title">
+          <p class="eyebrow">SEO target</p>
+          <h2 id="seo-title">Best Komodo video downloader for Kommodo MP4 exports</h2>
+          <p>
+            This page is built for people searching for a Komodo video downloader,
+            Kommodo recording downloader, Komodo MP4 downloader, and a simple way to
+            download Kommodo recordings with progress. It is fast, open source, and
+            designed to keep the video transfer in the browser whenever possible.
+          </p>
+        </section>
+
+        <section class="open-source-section" aria-labelledby="source-title">
+          <p class="eyebrow">Open source</p>
+          <h2 id="source-title">GitHub source code</h2>
+          <p>
+            The downloader is published as an MIT-licensed project. Review the code,
+            fork it, or report issues on GitHub.
+          </p>
+          <div class="hero-actions">
+            <a class="button button-primary" href="https://github.com/aamirmursleen/kommodo-video-downloader" rel="noopener">Open source repo</a>
+            <a class="button button-secondary" href="https://github.com/aamirmursleen" rel="noopener">Aamir on GitHub</a>
+          </div>
+        </section>
+      </main>
+
+      <footer class="site-footer">
+        <p>Built by <a href="https://www.nafran.com/" rel="noopener">Nafran</a>.</p>
+        <nav aria-label="Footer">
+          <a href="https://kommodovideodownloader.nafran.com/">Komodo video downloader</a>
+          <a href="https://github.com/aamirmursleen/kommodo-video-downloader" rel="noopener">Source code</a>
+          <a href="https://github.com/aamirmursleen" rel="noopener">GitHub profile</a>
+        </nav>
+      </footer>
+    </div>
+  </body>
+</html>

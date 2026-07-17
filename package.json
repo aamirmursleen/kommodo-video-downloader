@@ -1,0 +1,33 @@
+{
+  "name": "kommodo-video-downloader",
+  "version": "1.0.0",
+  "description": "Open-source Komodo video downloader for saving Kommodo recordings as MP4 with browser-side progress.",
+  "type": "module",
+  "private": false,
+  "license": "MIT",
+  "author": "Muhammad Aamir Mursleen",
+  "homepage": "https://kommodovideodownloader.nafran.com/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aamirmursleen/kommodo-video-downloader.git"
+  },
+  "bugs": {
+    "url": "https://github.com/aamirmursleen/kommodo-video-downloader/issues"
+  },
+  "keywords": [
+    "komodo-video-downloader",
+    "kommodo-video-downloader",
+    "kommodo-recording-downloader",
+    "komodo-mp4-downloader",
+    "hls-to-mp4",
+    "cloudflare-pages"
+  ],
+  "scripts": {
+    "build": "node build.mjs",
+    "dev": "npx wrangler pages dev dist --compatibility-date=2026-07-17",
+    "deploy": "npx wrangler pages deploy dist --project-name kommodo-video-downloader"
+  },
+  "devDependencies": {
+    "wrangler": "^4.112.0"
+  }
+}
