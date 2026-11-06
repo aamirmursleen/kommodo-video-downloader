@@ -28,11 +28,13 @@ async function fingerprintAsset(relativePath) {
 const stylesheetHref = await fingerprintAsset("styles.css");
 const appHref = await fingerprintAsset("app.js");
 const muxHref = await fingerprintAsset("vendor/mux.min.js");
+const remuxHref = await fingerprintAsset("mp4-remux.js");
 
 const homepagePath = resolve(dist, "index.html");
 const homepage = (await readFile(homepagePath, "utf8"))
   .replace('href="/styles.css"', `href="${stylesheetHref}"`)
   .replace('src="/vendor/mux.min.js"', `src="${muxHref}"`)
+  .replace('src="/mp4-remux.js"', `src="${remuxHref}"`)
   .replace('src="/app.js"', `src="${appHref}"`);
 await writeFile(homepagePath, homepage);
 

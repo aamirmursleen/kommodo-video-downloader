@@ -368,7 +368,16 @@ async function transmuxToMp4(buffers) {
   }
 
   updateProgress(99);
-  return new Blob(parts, { type: "video/mp4" });
+
+  // mux.js emits fragmented MP4 with an "unknown" duration that many desktop
+  // players show as 13:15:21 and cannot seek. Rewrite it as a standard MP4.
+  try {
+    const remuxed = window.Mp4Remux.remuxFragmentedMp4(parts);
+    return new Blob(remuxed.parts, { type: "video/mp4" });
+  } catch (error) {
+    addLog(`Saved as a streaming MP4; some players may show the wrong length (${error.message}).`);
+    return new Blob(parts, { type: "video/mp4" });
+  }
 }
 
 async function handleSubmit(event) {
